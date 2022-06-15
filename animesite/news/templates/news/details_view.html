@@ -1,0 +1,9 @@
+{% extends 'main/layout.html'%}
+
+{% block title %} {{ article.title }} {% endblock %}
+
+{% block content %}
+  <h1>{{ article.title }}</h1>
+  <h3>{{ article.anons }}</h3>
+  <p>{{ article.full_text}}</p>
+{% endblock %}

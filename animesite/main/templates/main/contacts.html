@@ -1,0 +1,21 @@
+{% extends 'main/layout.html'%}
+
+
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<div class="feedback">
+					<div class="feedback_head">
+						<h1>Контакты</h1>
+						Отправьте ваш отзыв о портале КиряМонстер
+					</div>
+					<div class="feedback_send">
+						<form method="post" action="#" id="review">
+							<input type="text" name="review_name" placeholder="Ваше имя">
+							<input type="text" name="feedback_mail" placeholder="Ваш E-mail">
+							<textarea name="feedback_text" ></textarea>
+							<input type="submit" class="btn" value="отправить">
+						</form>
+					</div>
+				</div>
+{% endblock %}

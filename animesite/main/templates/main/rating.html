@@ -1,0 +1,29 @@
+{% extends 'main/layout.html'%}
+{% load static %}
+
+
+{% block title %} Рейтинг {% endblock %}
+
+{% block content %}
+<table class="rating">
+					<tr>
+						<th colspan="2" class="center">Аниме</th>
+						<th class="center">Год</th>
+						<th class="center">Рейтинг</th>
+					</tr>
+					{% for el in rtng %}
+					<tr>
+						<ol>
+						<td><img src="{{ el.image.url }}"></td>
+						<td><li><a href="{% url 'element' el.slug %}">{% if el.title|length <= 23 %}
+																	{{ el.title }}
+															   {% else %}
+																	{{ el.title|slice:17 }}...
+															   {% endif %}</a></td></li>
+						<td class="center">{{ el.year }}</td>
+						<td class="center value">{{ el.rating }}/10</td>
+						</ol>
+					</tr>
+					{% endfor %}
+</table>
+{% endblock %}
