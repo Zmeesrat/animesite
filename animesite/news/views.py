@@ -1,28 +1,33 @@
 from django.shortcuts import render, redirect
 from .models import Articles
-from main.models import rating
+from main.utils import DataMixin
 from .forms import ArticlesForm
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 
 
-sidertng = rating.objects.order_by('-rating')[:4]   #  4 аниме с самым высоким рейтингом
-news = Articles.objects.order_by('-id')[:1]     #  последняя добавленая новость
-data = {
-    'sidertng': sidertng,
-    'news': news
-}
 
 
-def news_home(request):
-    news_bydate = Articles.objects.order_by('date')
-    data['news_bydate'] = news_bydate
-    return render(request, 'news/news_home.html', data )
+class NewsHome(DataMixin, ListView):
+    template_name = 'news/news_home.html'
+    context_object_name = 'news_bydate'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_queryset(self):
+        return Articles.objects.order_by('date')
 
 class NewsDetailView(DetailView):
     model = Articles
     template_name = 'news/details_view.html'
     context_object_name = 'article'
-    extra_context = data
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_context()
+        return dict(list(context.items()) + list(c_def.items()))
 
 def createnews(request):
     error = ''
@@ -39,4 +44,4 @@ def createnews(request):
     data['form'] = form
     data['error'] = error
 
-    return render(request, 'news/create.html', data)
+    return render(request, 'news/create.html')

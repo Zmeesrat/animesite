@@ -3,43 +3,46 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import DetailView, CreateView, ListView
+
+from .utils import DataMixin
 from .models import rating
-from .forms import LoginForm
-from django.views.generic import DetailView, CreateView
-from news.models import Articles
 
 
-rtng = rating.objects.all()     # список аниме для таблице на странице "рейтинг"
-indexrtng = rating.objects.order_by('-id')[:4]      #  4 последних добавленых аниме
-sidertng = rating.objects.order_by('-rating')[:4]   #  4 аниме с самым высоким рейтингом
-news = Articles.objects.order_by('-id')[:1]     #  последняя добавленая новость
-sidebarlogform = LoginForm
-data = {
-    'sidebarlogform': sidebarlogform,
-    'sidertng': sidertng,
-    'news': news
-}
-
-class elementview(DetailView):
+class elementview(DataMixin, DetailView):
     model = rating
     template_name = 'main/anime_detail.html'
     context_object_name = 'element'
-    extra_context = data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+class MainView(DataMixin, View):
+    template = 'main/index.html'
+
+    def get(self, request):
+        self.context = self.get_context(indexrtng=rating.objects.order_by('-id')[:4])
+        return (render (request, self.template, self.context ))
+
+class AboutView(DataMixin, View):
+    template = 'main/contacts.html'
+
+    def get(self, request):
+        self.context = self.get_context()
+        return (render (request, self.template, self.context ))
 
 
-def index(request):
-    data['indexrtng'] = indexrtng
-    return render(request, 'main/index.html', data)
 
-def about(request):
-   return render(request, 'main/contacts.html', data)
+class RatingView(DataMixin, View):
+    template = 'main/rating.html'
 
-def anime(request):
-   return render(request, 'main/anime.html', data)
+    def get(self, request):
+        self.context = self.get_context(rtng=rating.objects.all())
+        return (render(request, self.template, self.context))
 
-def rating_page(request):
-    data['rtng'] = rtng
-    return render(request, 'main/rating.html', data )
 
 class registerUser(CreateView):
     form_class = UserCreationForm
@@ -54,6 +57,16 @@ class loginUser(LoginView):
     def get_success_url(self):
         return reverse_lazy('home')
 
+
+class Anime(DataMixin, ListView):
+    model = rating
+    template_name = 'main/anime.html'
+    context_object_name = 'rating'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_context()
+        return dict(list(context.items()) + list(c_def.items()))
 
 def logout_user(request):
     logout(request)

@@ -4,24 +4,11 @@
 {% block title %} Аниме {% endblock %}
 
 {% block content %}
-<div class="infoanim">
-					<img src="assets/img/goblin_post.png">
-					<span class=infoanim_text>Гоблины, гоблины, гоблины... ГОБЛИНЫ!</span>
-					<div class="button"><a href="goblin_slayer.html">Смотреть</a></div>
-				</div>
+{% for i in rating %}
 				<div class="infoanim">
-					<img src="assets/img/kono.png">
-					<span class=infoanim_text>Так уж получилось, что жизнь Казумы Сато, хикикомори, увлечённого видеоиграми, оборвалась в результате дорожно-транспортного происшествия. Такая вот суровая плата за хороший поступок, за спасение человека. </span>
-					<div class="button"><a href="#">Смотреть</a></div>
+					<img src="{{ i.image.url }}">
+					<span class=infoanim_text>{{ i.description }}</span>
+					<div class="button"><a href="{% url 'element' i.slug %}">Смотреть</a></div>
 				</div>
-				<div class="infoanim">
-					<img src="assets/img/papserk.png">
-					<span class=infoanim_text>Papserk</span>
-					<div class="button"><a href="#">Смотреть</a></div>
-				</div>
-				<div class="infoanim">
-					<img src="assets/img/kono.png">
-					<span class=infoanim_text>Так уж получилось, что жизнь Казумы Сато, хикикомори, увлечённого видеоиграми, оборвалась в результате дорожно-транспортного происшествия. Такая вот суровая плата за хороший поступок, за спасение человека. </span>
-					<div class="button"><a href="#">Смотреть</a></div>
-				</div>
+{% endfor %}
 {% endblock %}
